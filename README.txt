@@ -175,7 +175,7 @@ Downloading pip-23.3.2-py3-none-any.whl (2.1 MB)
 
 	5、不同版本的鸿蒙hb编译
 		a、鸿蒙3.2
-			python3 -m pip install --user ohos-build
+			pip install --user ohos-build
 			export 配置环境变量
 				export PATH=/home/arctan/.local/bin:$PATH
 			或修改 ~/.bashrc 配置环境变量
@@ -183,6 +183,8 @@ Downloading pip-23.3.2-py3-none-any.whl (2.1 MB)
 
 		b、鸿蒙4.1 和master	
 			如果已安装了鸿蒙3.2 的  ohohs-build 先卸载
-				pip python3 -m pip uninstall ohos-build
+				pip uninstall ohos-build
 			然后再安装
-				python3 -m  pip install build/lite
+				pip install build/hb
+			
+			源码目录下 执行 hb set 执行版本选择
