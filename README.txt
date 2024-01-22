@@ -188,3 +188,44 @@ Downloading pip-23.3.2-py3-none-any.whl (2.1 MB)
 				pip install build/hb
 			
 			源码目录下 执行 hb set 执行版本选择
+
+
+
+
+7、qemu arm64 内核支持 HDF 
+	1、修改out/KERNEL_OBJ/kernel/src_tmp/linux-5.10 目录 增加 HDF 支持 然后在拷贝到源码目录
+		cd out/KERNEL_OBJ/kernel/src_tmp/linux-5.10
+		cp arch/arm64/configs/qemu-arm-linux_standard_defconfig .config 
+		make ARCH=arm64 menuconfig
+		mv .config ../../../../../kernel/linux/config/linux-5.10/arch/arm64/configs/qemu-arm-linux_standard_defconfig
+
+		执行hb build
+		报错如下：
+		[OHOS ERROR] make[2]: 离开目录“/home/arctan/work/workspace/harmonyOS/harmony3_2_3/harmony3_2_3/out/KERNEL_OBJ/kernel/OBJ/linux-5.10”
+		[OHOS ERROR] make[1]: 离开目录“/home/arctan/work/workspace/harmonyOS/harmony3_2_3/harmony3_2_3/out/KERNEL_OBJ/kernel/src_tmp/linux-5.10”
+		[OHOS ERROR] PATH="/home/arctan/work/workspace/harmonyOS/harmony3_2_3/harmony3_2_3/device/board/hisilicon/hispark_taurus/uboot/prebuilts:$PATH" make -C /home/arctan/work/workspace/harmonyOS/harmony3_2_3/harmony3_2_3/out/KERNEL_OBJ/kernel/src_tmp/linux-5.10 ARCH=arm64  CC="/home/arctan/work/workspace/harmonyOS/harmony3_2_3/harmony3_2_3/prebuilts/clang/ohos/linux-x86_64/llvm/bin/clang" CROSS_COMPILE="/home/arctan/work/workspace/harmonyOS/harmony3_2_3/harmony3_2_3/prebuilts/gcc/linux-x86/aarch64/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-" -j64 Image
+		[OHOS ERROR] make[1]: 进入目录“/home/arctan/work/workspace/harmonyOS/harmony3_2_3/harmony3_2_3/out/KERNEL_OBJ/kernel/src_tmp/linux-5.10”
+		[OHOS ERROR] make[2]: 进入目录“/home/arctan/work/workspace/harmonyOS/harmony3_2_3/harmony3_2_3/out/KERNEL_OBJ/kernel/OBJ/linux-5.10”
+		[OHOS ERROR]   GEN     Makefile
+		[OHOS ERROR]   CALL    /home/arctan/work/workspace/harmonyOS/harmony3_2_3/harmony3_2_3/out/KERNEL_OBJ/kernel/src_tmp/linux-5.10/scripts/atomic/check-atomics.sh
+		[OHOS ERROR]   CALL    /home/arctan/work/workspace/harmonyOS/harmony3_2_3/harmony3_2_3/out/KERNEL_OBJ/kernel/src_tmp/linux-5.10/scripts/checksyscalls.sh
+
+		提示：qemu-arm64-linux-min/hdf_config for small system or
+		OHOS ERROR] /home/arctan/work/workspace/harmonyOS/harmony3_2_3/harmony3_2_3/out/KERNEL_OBJ/kernel/src_tmp/linux-5.10/drivers/hdf/khdf/Makefile:19: PRODUCT_PATH=vendor/ohemu/qemu-arm64-linux-min
+		[OHOS ERROR] /home/arctan/work/workspace/harmonyOS/harmony3_2_3/harmony3_2_3/out/KERNEL_OBJ/kernel/src_tmp/linux-5.10/drivers/hdf/khdf/Makefile:32: *** miss hcs config in /home/arctan/work/workspace/harmonyOS/harmony3_2_3/harmony3_2_3/vendor/ohemu/qemu-arm64-linux-min/hdf_config for small system or /home/arctan/work/workspace/harmonyOS/harmony3_2_3/harmony3_2_3/vendor/ohemu/qemu-arm64-linux-min/hdf_config/khdf for standrad system。 停止。
+		[OHOS ERROR] make[4]: *** [/home/arctan/work/workspace/harmonyOS/harmony3_2_3/harmony3_2_3/out/KERNEL_OBJ/kernel/src_tmp/linux-5.10/scripts/Makefile.build:537：drivers/hdf/khdf] 错误 2
+		[OHOS ERROR] make[3]: *** [/home/arctan/work/workspace/harmonyOS/harmony3_2_3/harmony3_2_3/out/KERNEL_OBJ/kernel/src_tmp/linux-5.10/scripts/Makefile.build:537：drivers/hdf] 错误 2
+		[OHOS ERROR] make[3]: *** 正在等待未完成的任务....
+		[OHOS ERROR]   CC      drivers/interconnect/core.o
+
+		解决：编译内核
+		1、cp vendor/ohemu/qemu_arm64_linux_min/ vendor/ohemu/qemu-arm64-linux-min/ -r
+		2、cp vendor/hihope/rk3568/hdf_config/ vendor/ohemu/qemu-arm64-linux-min/ -r
+
+		 阅读 kernel/linux/config/README_zh.md 文件
+		 /build.sh --product-name qemu-arm64-linux-min              # 编译hi3516dv300镜像
+					--build-target build_kernel                    # 编译hi3516dv300的uImage内核镜像
+                   --gn-args linux_kernel_version=\"linux-5.10\"  # 编译指定内核版本
+
+		 
+			
